@@ -1,5 +1,4 @@
-
-import 'package:chapa_tu_aula/screens/home_page.dart';
+import 'package:chapa_tu_aula/screens/home.dart';
 import 'package:chapa_tu_aula/services/login.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Chapa tu Aula',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
@@ -118,15 +117,19 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void makeLoginRequest(String email, String password) async {
-    final dynamic token = await apiSUM.login(
+    final dynamic result = await apiSUM.login(
       email.split("@")[0],
       password,
     );
 
-    if (token != null && token is String) {
-      final String loginToken = token;
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const SecondScreen()));
+    if (result != null) {
+      Map<String, dynamic> responseData = result['response'];
+      Map<String, String> cookies = result['cookies'];
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomePage(responseData: responseData, cookies: cookies)));
     } else {
       login.showAlertToast("Correo o contraseña incorrecta");
     }

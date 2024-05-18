@@ -1,21 +1,37 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:chapa_tu_aula/screens/navDrawer.dart';
+import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
 
+class ProfilePage extends StatefulWidget {
+  Map<String, dynamic> responseData;
+  Map<String, String> cookies;
 
-class Perfil extends StatefulWidget
-{
+  ProfilePage({super.key, required this.responseData, required this.cookies});
+
   @override
-  _MyPerfilPageState  createState() {
-    return _MyPerfilPageState ();
+  _ProfilePageState createState() {
+    return _ProfilePageState();
   }
 }
 
-class _MyPerfilPageState extends State<Perfil> {
+class _ProfilePageState extends State<ProfilePage> {
+  late Map<String, dynamic> userInfo;
+  late String userName;
+  late MemoryImage userPhoto;
+  late String userCode;
+  late String userGrade;
+
+  @override
   Widget build(BuildContext context) {
+    getUserInfo();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Mi Perfil',
+        title: const Text(
+          'Mi Perfil',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -25,7 +41,7 @@ class _MyPerfilPageState extends State<Perfil> {
       ),
       body: Column(
         children: [
-          const Expanded(flex: 2, child: _TopPortion()),
+          Expanded(flex: 2, child: _TopPortion(userPhoto: userPhoto)),
           Expanded(
             flex: 3,
             child: Padding(
@@ -33,7 +49,7 @@ class _MyPerfilPageState extends State<Perfil> {
               child: Column(
                 children: [
                   Text(
-                    "APELLIDO1 APELLIDO2, NOMBRES",
+                    userName,
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -41,87 +57,129 @@ class _MyPerfilPageState extends State<Perfil> {
                   ),
                   Text(
                     "Estudiante",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w100, fontStyle: FontStyle.italic),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w100,
+                        fontStyle: FontStyle.italic),
                   ),
                   const SizedBox(height: 16),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("########",style: TextStyle(fontSize:25, fontWeight: FontWeight.bold, color: Colors.blueAccent),),
-                          Text("Código",style: TextStyle(fontWeight: FontWeight.w100, color: Colors.grey),)
+                          Text(
+                            userCode,
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueAccent),
+                          ),
+                          Text(
+                            "########",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey),
+                          )
                         ],
                       ),
                       SizedBox(width: 20.0),
-                      Column(
-                      children:[
-                        Text("##.###",style: TextStyle(fontSize:25, fontWeight: FontWeight.bold, color: Colors.blueAccent),),
-                        Text("Promedio",style: TextStyle(fontWeight: FontWeight.w100, color: Colors.grey),),
-                      ]
-                      ),
+                      Column(children: [
+                        Text(
+                          userGrade as String,
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueAccent),
+                        ),
+                        Text(
+                          "Promedio",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w100, color: Colors.grey),
+                        ),
+                      ]),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Container(
-                      height:300,
+                      height: 300,
                       constraints: const BoxConstraints(maxWidth: 400),
-                      child:
-                      ListView(
+                      child: ListView(
                         padding: const EdgeInsets.all(8),
                         children: <Widget>[
                           Container(
-                            height: 50,
-                            child:
-                                Column(
-                                    children:[
-                                      Text("Facultad",style: TextStyle(fontWeight: FontWeight.bold),),
-                                      Text("20 - INGENIERÍA DE SISTEMAS E INFORMÁTICA",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                    ]
-                                )
-                          ),
+                              height: 50,
+                              child: Column(children: [
+                                Text(
+                                  "Facultad",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "20 - INGENIERÍA DE SISTEMAS E INFORMÁTICA",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.deepPurple),
+                                ),
+                              ])),
                           Divider(),
                           Container(
                               height: 50,
-                              child:
-                              Column(
-                                  children:[
-                                    Text("Programa",style: TextStyle(fontWeight: FontWeight.bold),),
-                                    Text("2 - E.P. de Ingeniería de Software",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                  ]
-                              )
-                          ),
+                              child: Column(children: [
+                                Text(
+                                  "Programa",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "2 - E.P. de Ingeniería de Software",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.deepPurple),
+                                ),
+                              ])),
                           Divider(),
                           Container(
                               height: 50,
-                              child:
-                              Column(
-                                  children:[
-                                    Text("Periodo Académico",style: TextStyle(fontWeight: FontWeight.bold),),
-                                    Text("2024-1",style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                  ]
-                              )
-                          ),
+                              child: Column(children: [
+                                Text(
+                                  "Periodo Académico",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "2024-1",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.deepPurple),
+                                ),
+                              ])),
                         ],
-                      )
-                  ),
+                      )),
                 ],
               ),
             ),
           ),
         ],
       ),
-      drawer: NavDrawer(),
+      drawer: NavDrawer(
+        responseData: widget.responseData,
+        cookies: widget.cookies,
+      ),
     );
+  }
+
+  void getUserInfo() {
+    userName =
+        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']}${widget.responseData['dto']['apeMaterno']}";
+    Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
+    userPhoto = MemoryImage(userPhotoBytes);
+    userCode = widget.responseData['dto']['codAlumno'];
+    userGrade = widget.responseData['dto']['ponderado'].toString();
   }
 }
 
 class _TopPortion extends StatelessWidget {
-  const _TopPortion({super.key});
+  final MemoryImage userPhoto;
+
+  const _TopPortion({super.key, required this.userPhoto});
 
   @override
   Widget build(BuildContext context) {
@@ -149,13 +207,10 @@ class _TopPortion extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.black,
                     shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            'https://procsoft.wordpress.com/wp-content/uploads/2019/10/cropped-logo-fisi-3.png')),
+                    image: DecorationImage(fit: BoxFit.fill, image: userPhoto),
                   ),
                 ),
               ],
