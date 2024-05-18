@@ -1,17 +1,15 @@
+
 import 'package:chapa_tu_aula/screens/home_page.dart';
 import 'package:chapa_tu_aula/services/login.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:chapa_tu_aula/services/api_sum.dart';
+
 import 'package:chapa_tu_aula/components/home_page/input_field.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
