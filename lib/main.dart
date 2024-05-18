@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:chapa_tu_aula/services/api_sum.dart';
 import 'package:chapa_tu_aula/screens/home_page.dart';
-
+import 'package:chapa_tu_aula/services/login.dart';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:chapa_tu_aula/services/api_sum.dart';
+import 'package:chapa_tu_aula/components/home_page/input_field.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,43 +16,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const LoginForm(),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: Scaffold(
+          backgroundColor: Colors.indigo.shade400,
+          resizeToAvoidBottomInset: false,
+          body: const Center(
+              child: Padding(
+            padding:
+                EdgeInsets.only(left: 0.0, top: 240.0, right: 0.0, bottom: 0.0),
+            child: LoginForm(),
+          )),
+        ));
   }
 }
 
-
 class LoginForm extends StatefulWidget {
-  const LoginForm( {super.key});
+  const LoginForm({super.key});
+
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
-
 
 class _LoginFormState extends State<LoginForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final apiSUM = ApiSUM();
+
+  final login = Login();
 
   @override
   void dispose() {
@@ -61,75 +57,80 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 20.0), // Add bottom margin
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Iniciar sesión",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28.0,
+    return Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40.0),
+                topRight: Radius.circular(40.0)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 10.0, spreadRadius: 5.0)
+            ]),
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 10.0), // Add bottom margin
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Iniciar sesión",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32.0,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-          ),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child:  Text(
-              "Correo universitario"
-          ),
-        ),
-
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                hintText: "Ingrese su correo universitario",
-                filled: true,
-                fillColor: Colors.grey[200], // Grey background color
-                border: OutlineInputBorder( // Round borders
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: BorderSide.none, // No border side
+                EmailField(inputController: emailController),
+                PasswordField(inputController: passwordController),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.indigo.shade400,
+                          foregroundColor: Colors.white),
+                      onPressed: () {
+                        makeLoginRequest(
+                            emailController.text, passwordController.text);
+                      },
+                      child: const Text("Iniciar sesión")),
                 ),
-              ),
-            ),
-
-          const Align(
-            alignment: Alignment.centerLeft,
-            child:  Text(
-                "Contraseña"
-            ),
-          ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                hintText: "Ingrese su contraseña",
-                filled: true,
-                fillColor: Colors.grey[200], // Grey background color
-                border: OutlineInputBorder( // Round borders
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: BorderSide.none, // No border side
+                InkWell(
+                  onTap: () async {
+                    await launchUrl(Uri.parse(
+                        'https://webmail.unmsm.edu.pe/app/cambioclave/')); // Add URL which you want here
+                    // Navigator.of(context).pushNamed(SignUpScreen.routeName);
+                  },
+                  child: const Text(
+                    '¿No recuerdas tu contraseña?',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(padding: const EdgeInsets.only(top: 40.0),
-            child: ElevatedButton(
-                onPressed: (){
-                  final String? loginToken = apiSUM.login(emailController.text,passwordController.text) as String?;
-                  if (loginToken != null){
+              ],
+            )));
+  }
 
-                  }
-                },
-                child: const Text("Iniciar sesión")),)
-        ],
-        )
-      )
+  void makeLoginRequest(String email, String password) async {
+    final dynamic token = await apiSUM.login(
+      email.split("@")[0],
+      password,
     );
+
+    if (token != null && token is String) {
+      final String loginToken = token;
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const SecondScreen()));
+    } else {
+      login.showAlertToast("Correo o contraseña incorrecta");
+    }
   }
 }
