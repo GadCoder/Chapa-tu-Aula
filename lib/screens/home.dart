@@ -1,8 +1,7 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:chapa_tu_aula/screens/classroms_list.dart';
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
 import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
 import 'package:chapa_tu_aula/services/api_sum.dart';
 
@@ -138,7 +137,9 @@ class _HomePageState extends State<HomePage> {
 
   void getUserInfo() {
     userName =
-        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']}${widget.responseData['dto']['apeMaterno']}";
+        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']}${widget.responseData['dto']['apeMaterno']}"
+            .toString();
+    userName = utf8.decode(userName);
     Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
     userPhoto = MemoryImage(userPhotoBytes);
   }

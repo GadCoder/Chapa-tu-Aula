@@ -1,4 +1,4 @@
-import 'package:chapa_tu_aula/components/classroms_list/classromContainer.dart';
+import 'package:chapa_tu_aula/components/classroms_list/classrom_container.dart';
 import 'package:chapa_tu_aula/components/classroms_list/searchField.dart';
 import 'package:flutter/material.dart';
 
