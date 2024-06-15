@@ -4,6 +4,7 @@ import 'package:chapa_tu_aula/screens/classroms_list.dart';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
 import 'package:chapa_tu_aula/services/api_sum.dart';
+import 'package:logger/logger.dart';
 
 class HomePage extends StatefulWidget {
   Map<String, dynamic> responseData;
@@ -20,7 +21,11 @@ class _HomePageState extends State<HomePage> {
   late Map<String, dynamic> userInfo;
   late String userName;
   late MemoryImage userPhoto;
-  final apiSUM = ApiSUM();
+  late String userDegree;
+  late String userPlan;
+  final apiSUM = SumAPI();
+
+  var logger = Logger();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 foregroundColor: Colors.black,
                 fixedSize: const Size(370, 280),
                 alignment: Alignment.center,
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                 )),
@@ -88,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                           cookies: widget.cookies)));
             },
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           ElevatedButton(
@@ -101,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                 foregroundColor: Colors.white,
                 fixedSize: const Size(370, 280),
                 alignment: Alignment.center,
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                 )),
@@ -136,10 +141,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getUserInfo() {
-    userName =
-        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']}${widget.responseData['dto']['apeMaterno']}"
+    var userNameFromAPI =
+        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']} ${widget.responseData['dto']['apeMaterno']}"
             .toString();
-    userName = utf8.decode(userName);
+    userName = utf8.decode(userNameFromAPI.runes.toList());
+    userDegree =
+        widget.responseData['dto']['desEscuela'].split(' ').last.toUpperCase();
+    userPlan = widget.responseData['dto']['codPlan'];
+
     Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
     userPhoto = MemoryImage(userPhotoBytes);
   }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-class ApiSUM {
+class SumAPI {
   static const String baseUrl = 'sumvirtual.unmsm.edu.pe';
   var logger = Logger();
 
@@ -39,8 +39,8 @@ class ApiSUM {
         }
       }
       Map<String, dynamic> responseData = responseBody['data'][0];
-      logger.d("Response data: ");
-      logger.d(responseData);
+      // logger.d("Response data: ");
+      // logger.d(responseData);
 
       return {'response': responseData, 'cookies': cookieDict};
     } else {

@@ -6,23 +6,29 @@ import 'package:logger/logger.dart';
 
 import '../components/shared/navDrawer.dart';
 import '../models/Course.dart';
+import '../models/Section.dart';
 
-class ClassromsList extends StatefulWidget {
+class SectionsList extends StatefulWidget {
   Map<String, dynamic> responseData;
   Map<String, String> cookies;
+  String courseCode;
 
-  ClassromsList({super.key, required this.responseData, required this.cookies});
+  SectionsList(
+      {super.key,
+      required this.responseData,
+      required this.cookies,
+      required this.courseCode});
 
   @override
-  State<ClassromsList> createState() => _ClassromsListState();
+  State<SectionsList> createState() => _ClassromsListState();
 }
 
-class _ClassromsListState extends State<ClassromsList> {
+class _ClassromsListState extends State<SectionsList> {
   final searchController = TextEditingController();
   final fisiHorariosAPI = FISIHorariosAPI();
   late String userDegree;
   late String userPlan;
-  List<Course> courses = [];
+  List<Section> sections = [];
 
   var logger = Logger();
 
@@ -45,7 +51,7 @@ class _ClassromsListState extends State<ClassromsList> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Programación diaria',
+          'Secciones',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -53,16 +59,16 @@ class _ClassromsListState extends State<ClassromsList> {
           ),
         ),
       ),
-      body: courses.isEmpty
+      body: sections.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: courses.length,
+              itemCount: sections.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 40.0, vertical: 20.0),
                   child: Column(children: [
-                    CourseContainer(course: courses[index]),
+                    // CourseContainer(course: sections[index]),
                     const SizedBox(height: 16.0),
                   ]),
                 );

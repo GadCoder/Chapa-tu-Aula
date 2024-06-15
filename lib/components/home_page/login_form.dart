@@ -15,7 +15,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final apiSUM = ApiSUM();
+  final apiSUM = SumAPI();
 
   final login = Login();
 
